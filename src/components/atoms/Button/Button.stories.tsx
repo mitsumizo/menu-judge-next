@@ -15,6 +15,7 @@ export const Primary: Story = {
     const button = within(canvasElement).getByRole("button", {
       name: "Analyze",
     });
+    await expect(button).toHaveAttribute("data-variant", "primary");
     await userEvent.click(button);
     await expect(args.onClick).toHaveBeenCalledTimes(1);
   },
