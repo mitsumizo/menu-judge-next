@@ -2,5 +2,24 @@
   "Home": {
     "title": "Menu Judge",
     "tagline": "Understand any restaurant menu"
+  },
+  "Dish": {
+    "spiciness": "Spiciness",
+    "sweetness": "Sweetness",
+    "ingredients": "Ingredients",
+    "allergens": "Allergens",
+    "unknown": "Unknown",
+    "priceUnknown": "Price unknown",
+    "category": {
+      "appetizer": "Appetizer",
+      "main": "Main",
+      "dessert": "Dessert",
+      "beverage": "Beverage",
+      "other": "Other"
+    }
+  },
+  "DishList": {
+    "label": "Analysis results",
+    "count": "{count, plural, one {# dish found} other {# dishes found}}"
   }
 }
