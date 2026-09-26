@@ -1,0 +1,53 @@
+{
+  "name": "menu-judge-next",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "next typegen && tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "e2e": "playwright test",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "test": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run --passWithNoTests",
+    "test:unit": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run --project unit --passWithNoTests",
+    "test:storybook": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run --project storybook"
+  },
+  "dependencies": {
+    "next": "16.3.6",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^5.3.1",
+    "@playwright/test": "^1.63.0",
+    "@storybook/addon-docs": "^10.6.0",
+    "@storybook/addon-vitest": "^10.6.0",
+    "@storybook/nextjs-vite": "^10.6.0",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^24.19.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitest/browser-playwright": "^4.1.11",
+    "@vitest/coverage-v8": "^4.1.11",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.6",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-storybook": "^10.6.0",
+    "playwright": "^1.63.0",
+    "prettier": "^3.9.9",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "storybook": "^10.6.0",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vite": "^8.3.1",
+    "vitest": "^4.1.11"
+  }
+}
