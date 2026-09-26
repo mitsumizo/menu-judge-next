@@ -1,0 +1,42 @@
+{
+  "Home": {
+    "title": "Menu Judge",
+    "tagline": "Understand any restaurant menu"
+  },
+  "Dish": {
+    "spiciness": "Spiciness",
+    "sweetness": "Sweetness",
+    "ingredients": "Ingredients",
+    "allergens": "Allergens",
+    "unknown": "Unknown",
+    "priceUnknown": "Price unknown",
+    "category": {
+      "appetizer": "Appetizer",
+      "main": "Main",
+      "dessert": "Dessert",
+      "beverage": "Beverage",
+      "other": "Other"
+    }
+  },
+  "DishList": {
+    "label": "Analysis results",
+    "count": "{count, plural, one {# dish found} other {# dishes found}}"
+  },
+  "AnalyzeForm": {
+    "apiKey": "Claude API key",
+    "show": "Show",
+    "hide": "Hide",
+    "image": "Menu photo (JPEG, PNG or WebP, up to 3.75MB)",
+    "submit": "Analyze menu",
+    "analyzing": "Analyzing…"
+  },
+  "Errors": {
+    "NO_API_KEY": "Please enter your Claude API key.",
+    "INVALID_FILE": "Please choose a JPEG, PNG or WebP image up to 3.75MB.",
+    "INVALID_API_KEY": "Your API key was rejected. Please check it and try again.",
+    "RATE_LIMITED": "Too many requests. Please wait a moment and try again.",
+    "NOT_A_MENU": "No dishes were found. Please make sure the photo shows a menu.",
+    "PARSE_ERROR": "The analysis result could not be read. Please try again.",
+    "UNKNOWN": "Something went wrong. Please try again."
+  }
+}
