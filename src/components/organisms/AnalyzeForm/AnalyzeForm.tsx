@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import {
+  startTransition,
   useActionState,
   useState,
   useSyncExternalStore,
@@ -31,7 +32,21 @@ export function AnalyzeForm({ action }: Props) {
   const t = useTranslations("AnalyzeForm");
   const tErrors = useTranslations("Errors");
   const locale = useLocale();
-  const [state, formAction, pending] = useActionState(action, null);
+  const [state, formAction, pending] = useActionState(
+    async (
+      _prev: AnalyzeResult | null,
+      formData: FormData,
+    ): Promise<AnalyzeResult> => {
+      try {
+        // 前回の結果はサーバーで使わないので送り返さない
+        return await action(null, formData);
+      } catch {
+        // 通信断・タイムアウトなどでアクション自体が失敗しても、画面は残してエラー表示にする
+        return { ok: false, code: "UNKNOWN" };
+      }
+    },
+    null,
+  );
   // サーバー（SSG）では空文字、ブラウザでは保存済みのキーを使う。ハイドレーション不一致を起こさない
   const savedKey = useSyncExternalStore(subscribeNothing, loadApiKey, () => "");
   const [typedKey, setTypedKey] = useState<string | null>(null);
@@ -44,7 +59,11 @@ export function AnalyzeForm({ action }: Props) {
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    const image = new FormData(event.currentTarget).get("image");
+    // form の action 属性経由だと React が送信後にフォームをリセットし、選んだ写真が消える。
+    // 自前で送信して、再試行時も同じ写真を使えるようにする
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const image = formData.get("image");
     const error: AnalyzeErrorCode | null = !apiKey.trim()
       ? "NO_API_KEY"
       : !(image instanceof File) ||
@@ -54,7 +73,8 @@ export function AnalyzeForm({ action }: Props) {
         ? "INVALID_FILE"
         : null;
     setClientError(error);
-    if (error) event.preventDefault();
+    if (error) return;
+    startTransition(() => formAction(formData));
   }
 
   const errorCode = clientError ?? (state && !state.ok ? state.code : null);
@@ -62,7 +82,6 @@ export function AnalyzeForm({ action }: Props) {
   return (
     <div className="space-y-8">
       <form
-        action={formAction}
         onSubmit={handleSubmit}
         className="bg-surface space-y-4 rounded-2xl p-5"
       >

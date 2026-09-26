@@ -98,7 +98,46 @@ export const TooLargeFileIsBlockedInBrowser: Story = {
     await fillAndSubmit(canvasElement, big);
     await expect(
       await within(canvasElement).findByRole("alert"),
-    ).toHaveTextContent("up to 4MB");
+    ).toHaveTextContent("up to 3.75MB");
     await expect(succeed).not.toHaveBeenCalled();
+  },
+};
+
+export const ActionFailureKeepsPageUsable: Story = {
+  args: {
+    action: fn<Action>(async () => {
+      throw new TypeError("Failed to fetch");
+    }),
+  },
+  play: async ({ canvasElement }) => {
+    await fillAndSubmit(canvasElement, png());
+    const c = within(canvasElement);
+    await expect(await c.findByRole("alert")).toHaveTextContent(
+      "Something went wrong. Please try again.",
+    );
+    await expect(c.getByRole("button", { name: "Analyze menu" })).toBeEnabled();
+  },
+};
+
+const notAMenu = fn<Action>(async () => ({ ok: false, code: "NOT_A_MENU" }));
+
+export const RetryKeepsSelectedPhoto: Story = {
+  args: { action: notAMenu },
+  beforeEach: () => {
+    notAMenu.mockClear();
+  },
+  play: async ({ canvasElement }) => {
+    await fillAndSubmit(canvasElement, png());
+    const c = within(canvasElement);
+    await c.findByRole("alert");
+    await expect(
+      c.getByLabelText<HTMLInputElement>(/Menu photo/).files,
+    ).toHaveLength(1);
+
+    await userEvent.click(c.getByRole("button", { name: "Analyze menu" }));
+    await waitFor(() => expect(notAMenu).toHaveBeenCalledTimes(2));
+    await expect(notAMenu.mock.calls[1][1].get("image")).toBeInstanceOf(File);
+    // 前回の結果（料理一覧）をサーバーへ送り返さない
+    await expect(notAMenu.mock.calls[1][0]).toBeNull();
   },
 };

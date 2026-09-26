@@ -209,7 +209,7 @@ type AnalyzeResult =
 - `lib/dish.ts`、`lib/prompt.ts`、`lib/claude.ts` を TDD で実装
 - Server Action `analyzeMenu()`
 - atoms → molecules → `DishCard`・`DishList` を story とともに実装
-- 画像はファイル選択のみ（縮小は Phase 2 のため、この時点では 4MB 超の画像は `INVALID_FILE` として扱う）
+- 画像はファイル選択のみ（縮小は Phase 2 のため、この時点では 3.75MB 超の画像は `INVALID_FILE` として扱う。Anthropic の画像上限 5MB は base64 化後のサイズで判定されるため、元画像はその 3/4 が上限）
 - APIキーは画面上の簡易入力欄で受け付け、localStorage に保存
 - next-intl を導入し、英語メッセージのみ用意
 

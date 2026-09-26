@@ -71,6 +71,23 @@ describe("validateAnalyzeInput", () => {
     ).toBe(true);
   });
 
+  it("上限サイズの画像は base64 化しても Anthropic の 5MB 上限に収まる", () => {
+    expect(Math.ceil(MAX_IMAGE_BYTES / 3) * 4).toBeLessThanOrEqual(
+      5 * 1024 * 1024,
+    );
+  });
+
+  it("base64 化すると 5MB を超える 4MiB の画像は INVALID_FILE", () => {
+    expect(
+      validateAnalyzeInput(
+        form({ apiKey: "k", image: png(4 * 1024 * 1024), locale: "en" }),
+      ),
+    ).toEqual({
+      ok: false,
+      code: "INVALID_FILE",
+    });
+  });
+
   it("上限を 1 バイト超えたら INVALID_FILE", () => {
     expect(
       validateAnalyzeInput(

@@ -1,7 +1,8 @@
 import type { ImageMediaType } from "./claude";
 import type { Locale } from "./prompt";
 
-export const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
+// Anthropic の画像上限（5MB）は base64 化後のサイズで判定されるため、元画像は 3/4 に抑える
+export const MAX_IMAGE_BYTES = Math.floor((5 * 1024 * 1024 * 3) / 4);
 const MEDIA_TYPES: readonly string[] = [
   "image/jpeg",
   "image/png",
