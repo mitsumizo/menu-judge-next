@@ -1,0 +1,10 @@
+# Spec/plan documents and internal working notes — never reformatted.
+docs/
+.superpowers/
+
+# Generated / build output.
+.next/
+storybook-static/
+playwright-report/
+test-results/
+coverage/

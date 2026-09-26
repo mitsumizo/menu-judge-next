@@ -16,6 +16,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Generated / build output not covered by the defaults above:
+    "storybook-static/**",
+    "playwright-report/**",
+    "test-results/**",
+    "coverage/**",
   ]),
   ...storybook.configs["flat/recommended"],
   prettier,
