@@ -20,9 +20,10 @@ npm run start       # 本番サーバー起動
 npm run lint        # ESLint
 npm run typecheck    # tsc --noEmit
 npm run format      # Prettier で整形
+npm run e2e        # Playwright E2E テスト
 ```
 
-`test` / `e2e` 系のコマンドは Vitest・Playwright 導入タスクで追記する。
+`test` 系のコマンドは Vitest 導入タスクで追記する。
 
 ## ディレクトリ構成と Atomic Design
 
