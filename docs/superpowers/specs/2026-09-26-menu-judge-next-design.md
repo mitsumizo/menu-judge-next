@@ -31,7 +31,7 @@
 |---|---|---|
 | フレームワーク | Next.js（着手時点の最新安定版）/ App Router | |
 | 言語 | TypeScript（strict） | |
-| スタイリング | Tailwind CSS | Flask 版のカラーパレットをトークン化 |
+| スタイリング | Tailwind CSS | Flask 版（`tailwind.config.js`）のカラーパレットをトークン化 |
 | 多言語 | next-intl | `/en`・`/ja` のロケールルーティング |
 | AI | `@anthropic-ai/sdk` / モデル `claude-sonnet-5` | サーバー側のみで使用 |
 | バリデーション | zod | Claude の応答 JSON を検証 |
@@ -41,11 +41,13 @@
 | CI | GitHub Actions | lint・型チェック・テスト・ビルド |
 | ホスティング | Vercel | PR ごとのプレビュー環境を利用 |
 
-カラーパレット（Flask 版から継承）:
+カラーパレット（Flask 版の `tailwind.config.js` 実装値から継承。CLAUDE.md 記載の値とは異なる）:
 
 ```
-Primary:    #3B82F6   Secondary: #10B981   Accent: #F59E0B
-Background: #0F172A   Surface:   #1E293B   Text:   #F8FAFC
+Primary:    #6366F1 (light #818CF8 / dark #4F46E5)
+Secondary:  #EC4899   Accent:  #8B5CF6
+Background: #0B0F19   Surface: #111827
+Text:       #F9FAFB (secondary #9CA3AF)
 ```
 
 ## 3. 描画方式（SSG / SSR / CSR）
@@ -122,8 +124,8 @@ menu-judge-next/
 | `sweetness` | number | 整数 1〜5 |
 | `ingredients` | string[] | 省略時は空配列 |
 | `allergens` | string[] | 省略時は空配列 |
-| `category` | enum | `appetizer` / `main` / `dessert` / `beverage` / `other` |
-| `price_range` | enum | `$` / `$$` / `$$$` / `$$$$` |
+| `category` | enum | `appetizer` / `main` / `dessert` / `beverage` / `other`。想定外の値・欠落時は `other` |
+| `price_range` | enum \| null | `$` / `$$` / `$$$` / `$$$$`。判別不能・想定外の値は `null` |
 
 - Claude 応答の形式は Flask 版と同じ `{ "dishes": [...] }`。コードブロック（```json）で囲まれていても解析できること
 
