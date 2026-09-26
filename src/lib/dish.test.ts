@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { parseDish } from "./dish";
 
+function without(...keys: string[]): Record<string, unknown> {
+  const data: Record<string, unknown> = { ...valid };
+  for (const key of keys) delete data[key];
+  return data;
+}
+
 const valid = {
   original_name: "Pad Thai",
   translated_name: "パッタイ",
@@ -19,8 +25,10 @@ describe("parseDish", () => {
   });
 
   it("ingredients / allergens が無ければ空配列を補う", () => {
-    const { ingredients: _i, allergens: _a, ...rest } = valid;
-    expect(parseDish(rest)).toMatchObject({ ingredients: [], allergens: [] });
+    expect(parseDish(without("ingredients", "allergens"))).toMatchObject({
+      ingredients: [],
+      allergens: [],
+    });
   });
 
   it.each([
@@ -52,8 +60,7 @@ describe("parseDish", () => {
   });
 
   it("category が無ければ other にする", () => {
-    const { category: _c, ...rest } = valid;
-    expect(parseDish(rest)?.category).toBe("other");
+    expect(parseDish(without("category"))?.category).toBe("other");
   });
 
   it.each([null, "$$$$$", "cheap"])(
@@ -66,8 +73,7 @@ describe("parseDish", () => {
   );
 
   it("price_range が無ければ null にする", () => {
-    const { price_range: _p, ...rest } = valid;
-    expect(parseDish(rest)?.price_range).toBeNull();
+    expect(parseDish(without("price_range"))?.price_range).toBeNull();
   });
 
   it("オブジェクト以外は null", () => {
