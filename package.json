@@ -9,7 +9,12 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "test": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run --passWithNoTests",
+    "test:unit": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run --project unit --passWithNoTests",
+    "test:storybook": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run --project storybook"
   },
   "dependencies": {
     "next": "16.3.6",
@@ -28,6 +33,17 @@
     "prettier": "^3.9.9",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "storybook": "^10.6.0",
+    "@storybook/nextjs-vite": "^10.6.0",
+    "@chromatic-com/storybook": "^5.3.1",
+    "@storybook/addon-vitest": "^10.6.0",
+    "@storybook/addon-docs": "^10.6.0",
+    "vite": "^8.3.1",
+    "eslint-plugin-storybook": "^10.6.0",
+    "vitest": "^4.1.11",
+    "playwright": "^1.63.0",
+    "@vitest/browser-playwright": "^4.1.11",
+    "@vitest/coverage-v8": "^4.1.11"
   }
 }

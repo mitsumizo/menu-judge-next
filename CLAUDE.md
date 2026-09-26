@@ -21,9 +21,11 @@ npm run lint        # ESLint
 npm run typecheck    # tsc --noEmit
 npm run format      # Prettier で整形
 npm run e2e        # Playwright E2E テスト
+npm run test        # Vitest（unit + storybook の全プロジェクト）
+npm run test:unit    # Vitest（lib 配下の unit テストのみ）
+npm run test:storybook # Vitest（Storybook の play 関数テストのみ）
+npm run storybook    # Storybook 起動
 ```
-
-`test` 系のコマンドは Vitest 導入タスクで追記する。
 
 ## ディレクトリ構成と Atomic Design
 
