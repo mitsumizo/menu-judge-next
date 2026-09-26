@@ -14,17 +14,19 @@
 TypeScript（strict）/ Next.js（App Router）/ Tailwind CSS。パスエイリアス `@/*` は `src/*` を指す。
 
 ```bash
-npm run dev        # 開発サーバー
-npm run build      # 本番ビルド
-npm run start       # 本番サーバー起動
-npm run lint        # ESLint
-npm run typecheck    # tsc --noEmit
-npm run format      # Prettier で整形
-npm run e2e        # Playwright E2E テスト
-npm run test        # Vitest（unit + storybook の全プロジェクト）
-npm run test:unit    # Vitest（lib 配下の unit テストのみ）
-npm run test:storybook # Vitest（Storybook の play 関数テストのみ）
-npm run storybook    # Storybook 起動
+npm run dev              # 開発サーバー
+npm run build            # 本番ビルド
+npm run start            # 本番サーバー起動
+npm run lint             # ESLint
+npm run typecheck        # next typegen && tsc --noEmit
+npm run format           # Prettier で整形
+npm run format:check     # Prettier のフォーマットチェック（--check）
+npm run e2e              # Playwright E2E テスト（http://localhost:3100）
+npm run test             # Vitest（unit + storybook の全プロジェクト）
+npm run test:unit        # Vitest（src/**/*.test.ts。lib 以外の層も含む）
+npm run test:storybook   # Vitest（Storybook の play 関数テストのみ）
+npm run storybook        # Storybook 起動
+npm run build-storybook  # Storybook の静的ビルド
 ```
 
 ## ディレクトリ構成と Atomic Design
@@ -32,12 +34,14 @@ npm run storybook    # Storybook 起動
 ```
 src/
 ├── app/[locale]/     # pages 層（Server Action 呼び出しはこの層のみ）
+├── proxy.ts          # ロケール振り分け（Next 16 では middleware.ts ではなく proxy.ts）
 ├── components/
 │   ├── atoms/        # 表示専用。翻訳・通信・localStorage に触れない
 │   ├── molecules/     # 表示専用。翻訳・通信・localStorage に触れない
 │   ├── organisms/     # 翻訳（useTranslations）や状態を持ってよい。"use client" はここから
 │   └── templates/     # 配置のみ決定。中身は children / props（slot）で受け取る
-├── lib/              # dish, prompt, claude, analyze-result, image
+├── lib/              # dish, prompt, analyze-result, claude, analyze-input, api-key-storage
+│                     # （image.ts は Phase 2 で追加予定）
 ├── i18n/
 └── messages/
 ```
@@ -53,8 +57,7 @@ Server Action（`analyzeMenu()`）は例外を投げず、判別可能な共用�
 
 ```ts
 type AnalyzeResult =
-  | { ok: true; dishes: Dish[] }
-  | { ok: false; code: AnalyzeErrorCode };
+  { ok: true; dishes: Dish[] } | { ok: false; code: AnalyzeErrorCode };
 ```
 
 料理 1 件の検証失敗はその料理だけを除外し、残りを返す。全件除外された場合は `NOT_A_MENU`。予期しない例外は `error.tsx` で受け止める。
@@ -66,7 +69,7 @@ type AnalyzeResult =
 
 ## テスト方針
 
-- `lib/`（dish, prompt, claude, image）: Vitest で TDD（Red → Green → Refactor）。正常系・異常系・境界値を網羅する
+- `lib/`（dish, prompt, analyze-result, claude, analyze-input, api-key-storage。image は Phase 2 で追加）: Vitest で TDD（Red → Green → Refactor）。正常系・異常系・境界値を網羅する
 - コンポーネント: Storybook の `play` 関数による操作テスト
 - 本番コードに `if (testMode)` のようなテスト用の条件分岐やマジックナンバーを入れない
 
