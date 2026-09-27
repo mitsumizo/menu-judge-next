@@ -4,18 +4,21 @@ import { useLocale, useTranslations } from "next-intl";
 import {
   startTransition,
   useActionState,
+  useCallback,
   useState,
   useSyncExternalStore,
   type FormEvent,
 } from "react";
 import { Button } from "@/components/atoms/Button/Button";
 import { ApiKeyField } from "@/components/molecules/ApiKeyField/ApiKeyField";
+import { Toast } from "@/components/molecules/Toast/Toast";
 import { MAX_IMAGE_BYTES } from "@/lib/analyze-input";
 import type { AnalyzeErrorCode, AnalyzeResult } from "@/lib/analyze-result";
 import { loadApiKey, saveApiKey } from "@/lib/api-key-storage";
 import { resizeImage } from "@/lib/resize-image";
 import { INPUT_ACCEPT, isAcceptableInput } from "@/lib/upload-rules";
 import { DishList } from "../DishList/DishList";
+import { ErrorPanel } from "../ErrorPanel/ErrorPanel";
 import { UploadZone } from "../UploadZone/UploadZone";
 
 type Props = {
@@ -30,8 +33,9 @@ const subscribeNothing = () => () => {};
 
 export function AnalyzeForm({ action }: Props) {
   const t = useTranslations("AnalyzeForm");
-  const tErrors = useTranslations("Errors");
   const locale = useLocale();
+  const [toastFor, setToastFor] = useState<AnalyzeResult | null>(null);
+  const closeToast = useCallback(() => setToastFor(null), []);
   const [state, formAction, pending] = useActionState(
     async (
       _prev: AnalyzeResult | null,
@@ -39,7 +43,9 @@ export function AnalyzeForm({ action }: Props) {
     ): Promise<AnalyzeResult> => {
       try {
         // 前回の結果はサーバーで使わないので送り返さない
-        return await action(null, formData);
+        const result = await action(null, formData);
+        if (result.ok) setToastFor(result);
+        return result;
       } catch {
         // 通信断・タイムアウトなどでアクション自体が失敗しても、画面は残してエラー表示にする
         return { ok: false, code: "UNKNOWN" };
@@ -114,15 +120,15 @@ export function AnalyzeForm({ action }: Props) {
         </Button>
       </form>
 
-      {errorCode && (
-        <p
-          role="alert"
-          className="bg-secondary/10 text-secondary rounded-xl p-4 text-sm"
-        >
-          {tErrors(errorCode)}
-        </p>
-      )}
+      {errorCode && <ErrorPanel code={errorCode} />}
       {!clientError && state?.ok && <DishList dishes={state.dishes} />}
+      {toastFor && toastFor === state && state.ok && (
+        <Toast
+          message={t("toast", { count: state.dishes.length })}
+          closeLabel={t("closeToast")}
+          onClose={closeToast}
+        />
+      )}
     </div>
   );
 }

@@ -61,6 +61,9 @@ export const Success: Story = {
       await within(canvasElement).findByRole("heading", { name: "Pad Thai" }),
     ).toBeVisible();
     await expect(localStorage.getItem("menu-judge:api-key")).toBe("sk-ant-x");
+    await expect(
+      await within(canvasElement).findByRole("status"),
+    ).toHaveTextContent("1 dish found");
   },
 };
 
@@ -79,9 +82,11 @@ export const ServerError: Story = {
   args: { action: fn<Action>(async () => ({ ok: false, code: "NOT_A_MENU" })) },
   play: async ({ canvasElement }) => {
     await fillAndSubmit(canvasElement, photo());
+    const alert = await within(canvasElement).findByRole("alert");
     await expect(
-      await within(canvasElement).findByRole("alert"),
-    ).toHaveTextContent(
+      within(alert).getByRole("heading", { name: "No dishes found" }),
+    ).toBeVisible();
+    await expect(alert).toHaveTextContent(
       "No dishes were found. Please make sure the photo shows a menu.",
     );
   },

@@ -28,16 +28,39 @@
     "hide": "Hide",
     "submit": "Analyze menu",
     "analyzing": "Analyzing…",
-    "preparing": "Preparing photo…"
+    "preparing": "Preparing photo…",
+    "toast": "{count, plural, one {# dish found} other {# dishes found}}",
+    "closeToast": "Close notification"
   },
   "Errors": {
-    "NO_API_KEY": "Please enter your Claude API key.",
-    "INVALID_FILE": "We couldn't use this photo. Please choose a JPEG, PNG, WebP or HEIC image up to 10MB.",
-    "INVALID_API_KEY": "Your API key was rejected. Please check it and try again.",
-    "RATE_LIMITED": "Too many requests. Please wait a moment and try again.",
-    "NOT_A_MENU": "No dishes were found. Please make sure the photo shows a menu.",
-    "PARSE_ERROR": "The analysis result could not be read. Please try again.",
-    "UNKNOWN": "Something went wrong. Please try again."
+    "NO_API_KEY": {
+      "title": "API key needed",
+      "message": "Please enter your Claude API key."
+    },
+    "INVALID_FILE": {
+      "title": "Photo can't be used",
+      "message": "We couldn't use this photo. Please choose a JPEG, PNG, WebP or HEIC image up to 10MB."
+    },
+    "INVALID_API_KEY": {
+      "title": "API key rejected",
+      "message": "Your API key was rejected. Please check it and try again."
+    },
+    "RATE_LIMITED": {
+      "title": "Too many requests",
+      "message": "Too many requests. Please wait a moment and try again."
+    },
+    "NOT_A_MENU": {
+      "title": "No dishes found",
+      "message": "No dishes were found. Please make sure the photo shows a menu."
+    },
+    "PARSE_ERROR": {
+      "title": "Couldn't read the result",
+      "message": "The analysis result could not be read. Please try again."
+    },
+    "UNKNOWN": {
+      "title": "Something went wrong",
+      "message": "Something went wrong. Please try again."
+    }
   },
   "UploadZone": {
     "dropHint": "Drop a menu photo here",
