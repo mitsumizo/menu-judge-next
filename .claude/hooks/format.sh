@@ -9,6 +9,11 @@ file=$(node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{proc
 # ファイルが属するチェックアウト（worktree を含む）のツールを使う
 root=$(git -C "$(dirname "$file")" rev-parse --show-toplevel 2>/dev/null) || exit 0
 bin="$root/node_modules/.bin"
+# 依存を入れる前の worktree では、元のチェックアウトのツールを使う
+if [ ! -x "$bin/prettier" ]; then
+  common=$(git -C "$root" rev-parse --path-format=absolute --git-common-dir 2>/dev/null) || exit 0
+  bin="$(dirname "$common")/node_modules/.bin"
+fi
 [ -x "$bin/prettier" ] || exit 0
 cd "$root" || exit 0
 
