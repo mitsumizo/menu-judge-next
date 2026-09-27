@@ -32,6 +32,8 @@ export async function resizeImage(
     bitmap.close();
     throw new ImageDecodeError();
   }
+  // 既定の "low" だと一度に大きく縮小したときに細かい文字がつぶれる
+  context.imageSmoothingQuality = "high";
   context.fillStyle = "#ffffff";
   context.fillRect(0, 0, width, height);
   context.drawImage(bitmap, 0, 0, width, height);

@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { decodeSize, makeImageFile, topLeftPixel } from "@/testing/images";
+import {
+  decodeSize,
+  makeImageFile,
+  makeStripesFile,
+  middleRow,
+  topLeftPixel,
+} from "@/testing/images";
 import { ImageDecodeError, resizeImage } from "./resize-image";
 
 describe("resizeImage", () => {
@@ -40,5 +46,13 @@ describe("resizeImage", () => {
       { type: "image/jpeg" },
     );
     await expect(resizeImage(broken)).rejects.toBeInstanceOf(ImageDecodeError);
+  });
+
+  it("細かい縞模様を縮小してもまだらにならない（小さな文字がつぶれない）", async () => {
+    const row = await middleRow(
+      await resizeImage(await makeStripesFile(4000, 50)),
+    );
+    // 補間品質が低いと黒 (0) と白 (255) がそのまま残り、振れ幅が 255 近くになる
+    expect(Math.max(...row) - Math.min(...row)).toBeLessThan(200);
   });
 });

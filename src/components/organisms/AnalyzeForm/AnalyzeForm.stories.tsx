@@ -219,3 +219,21 @@ export const ShowsSkeletonWhileAnalyzing: Story = {
     ).toBeNull();
   },
 };
+
+export const HeicUnsupportedInThisBrowser: Story = {
+  play: async ({ canvasElement }) => {
+    // Chromium は HEIC をデコードできない
+    const heic = new File(
+      [new TextEncoder().encode("ftypheic")],
+      "IMG_0001.HEIC",
+      { type: "image/heic" },
+    );
+    await fillAndSubmit(canvasElement, heic);
+    const alert = await within(canvasElement).findByRole("alert");
+    await expect(
+      within(alert).getByRole("heading", { name: "HEIC not supported here" }),
+    ).toBeVisible();
+    await expect(alert).not.toHaveTextContent("or HEIC");
+    await expect(succeed).not.toHaveBeenCalled();
+  },
+};

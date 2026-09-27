@@ -40,10 +40,12 @@ export const MAX_TOKENS = 8192;
 export type ImageMediaType = "image/jpeg" | "image/png" | "image/webp";
 export type MessagesClient = Pick<Anthropic, "messages">;
 
-/** ユーザーの APIキーで Anthropic クライアントを作る。baseURL は SDK が ANTHROPIC_BASE_URL から読む。 */
-export const CLAUDE_TIMEOUT_MS = 55_000;
-export const CLAUDE_MAX_RETRIES = 1;
+// ページの maxDuration（60 秒）から、画像の受け取りや応答の解析に使う 5 秒を引いた範囲に収める。
+// SDK はタイムアウトも再試行するため、再試行はしない（利用者が再送信できる）
+export const CLAUDE_TIMEOUT_MS = 50_000;
+export const CLAUDE_MAX_RETRIES = 0;
 
+/** ユーザーの APIキーで Anthropic クライアントを作る。baseURL は SDK が ANTHROPIC_BASE_URL から読む。 */
 export function createClaudeClient(apiKey: string): Anthropic {
   return new Anthropic({
     apiKey,

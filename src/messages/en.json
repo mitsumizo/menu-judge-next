@@ -41,6 +41,10 @@
       "title": "Photo can't be used",
       "message": "We couldn't use this photo. Please choose a JPEG, PNG, WebP or HEIC image up to 10MB."
     },
+    "HEIC_UNSUPPORTED": {
+      "title": "HEIC not supported here",
+      "message": "This browser can't read HEIC photos. Please open this page in Safari, or choose a JPEG, PNG or WebP image."
+    },
     "INVALID_API_KEY": {
       "title": "API key rejected",
       "message": "Your API key was rejected. Please check it and try again."

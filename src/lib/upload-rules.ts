@@ -11,11 +11,18 @@ export const INPUT_TYPES = [
 ];
 export const INPUT_ACCEPT = INPUT_TYPES.join(",");
 
+/** HEIC/HEIF かどうか（Windows などでは MIME が空になるため拡張子も見る）。 */
+export function isHeic(file: File): boolean {
+  return (
+    file.type === "image/heic" ||
+    file.type === "image/heif" ||
+    /\.hei[cf]$/i.test(file.name)
+  );
+}
+
 /** 縮小前の元画像として受け付けられるかを判定する。 */
 export function isAcceptableInput(file: File): boolean {
-  return (
-    file.size > 0 &&
-    file.size <= INPUT_MAX_BYTES &&
-    INPUT_TYPES.includes(file.type)
-  );
+  const knownType =
+    INPUT_TYPES.includes(file.type) || (file.type === "" && isHeic(file));
+  return file.size > 0 && file.size <= INPUT_MAX_BYTES && knownType;
 }

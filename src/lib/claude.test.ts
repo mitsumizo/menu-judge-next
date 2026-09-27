@@ -226,12 +226,12 @@ describe("analyzeMenuImage", () => {
 });
 
 describe("createClaudeClient", () => {
-  it("Vercel の関数上限に収まるタイムアウトと再試行回数で初期化する", () => {
+  it("タイムアウトと再試行の合計が関数の上限（60 秒）から処理の余裕 5 秒を引いた範囲に収まる", () => {
     const client = createClaudeClient("sk-ant-test");
     expect(client.timeout).toBe(CLAUDE_TIMEOUT_MS);
     expect(client.maxRetries).toBe(CLAUDE_MAX_RETRIES);
     expect(CLAUDE_TIMEOUT_MS * (CLAUDE_MAX_RETRIES + 1)).toBeLessThanOrEqual(
-      120_000,
+      55_000,
     );
   });
 });

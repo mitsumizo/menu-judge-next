@@ -16,7 +16,7 @@ import { MAX_IMAGE_BYTES } from "@/lib/analyze-input";
 import type { AnalyzeErrorCode, AnalyzeResult } from "@/lib/analyze-result";
 import { loadApiKey, saveApiKey } from "@/lib/api-key-storage";
 import { resizeImage } from "@/lib/resize-image";
-import { INPUT_ACCEPT, isAcceptableInput } from "@/lib/upload-rules";
+import { INPUT_ACCEPT, isAcceptableInput, isHeic } from "@/lib/upload-rules";
 import { DishList } from "../DishList/DishList";
 import { DishListSkeleton } from "../DishListSkeleton/DishListSkeleton";
 import { ErrorPanel } from "../ErrorPanel/ErrorPanel";
@@ -83,7 +83,7 @@ export function AnalyzeForm({ action }: Props) {
       image = await resizeImage(file);
     } catch {
       setPreparing(false);
-      return setClientError("INVALID_FILE");
+      return setClientError(isHeic(file) ? "HEIC_UNSUPPORTED" : "INVALID_FILE");
     }
     setPreparing(false);
     if (image.size > MAX_IMAGE_BYTES) return setClientError("INVALID_FILE");
