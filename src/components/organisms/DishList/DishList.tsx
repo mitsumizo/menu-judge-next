@@ -5,7 +5,7 @@ import { DishCard } from "../DishCard/DishCard";
 export function DishList({ dishes }: { dishes: Dish[] }) {
   const t = useTranslations("DishList");
   return (
-    <section aria-label={t("label")} className="space-y-4">
+    <section aria-label={t("label")} aria-live="polite" className="space-y-4">
       <p className="text-text-secondary text-sm">
         {t("count", { count: dishes.length })}
       </p>

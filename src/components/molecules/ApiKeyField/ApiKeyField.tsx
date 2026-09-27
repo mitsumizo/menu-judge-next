@@ -35,7 +35,12 @@ export function ApiKeyField({
           value={value}
           onChange={(e) => onChange(e.target.value)}
         />
-        <Button variant="ghost" onClick={() => setVisible((v) => !v)}>
+        <Button
+          variant="ghost"
+          aria-pressed={visible}
+          aria-controls={id}
+          onClick={() => setVisible((v) => !v)}
+        >
           {visible ? hideLabel : showLabel}
         </Button>
       </div>

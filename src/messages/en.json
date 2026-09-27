@@ -26,17 +26,57 @@
     "apiKey": "Claude API key",
     "show": "Show",
     "hide": "Hide",
-    "image": "Menu photo (JPEG, PNG or WebP, up to 3.75MB)",
     "submit": "Analyze menu",
-    "analyzing": "Analyzing…"
+    "analyzing": "Analyzing…",
+    "preparing": "Preparing photo…",
+    "toast": "{count, plural, one {# dish found} other {# dishes found}}",
+    "closeToast": "Close notification"
   },
   "Errors": {
-    "NO_API_KEY": "Please enter your Claude API key.",
-    "INVALID_FILE": "Please choose a JPEG, PNG or WebP image up to 3.75MB.",
-    "INVALID_API_KEY": "Your API key was rejected. Please check it and try again.",
-    "RATE_LIMITED": "Too many requests. Please wait a moment and try again.",
-    "NOT_A_MENU": "No dishes were found. Please make sure the photo shows a menu.",
-    "PARSE_ERROR": "The analysis result could not be read. Please try again.",
-    "UNKNOWN": "Something went wrong. Please try again."
+    "NO_API_KEY": {
+      "title": "API key needed",
+      "message": "Please enter your Claude API key."
+    },
+    "INVALID_FILE": {
+      "title": "Photo can't be used",
+      "message": "We couldn't use this photo. Please choose a JPEG, PNG, WebP or HEIC image up to 10MB."
+    },
+    "HEIC_UNSUPPORTED": {
+      "title": "HEIC not supported here",
+      "message": "This browser can't read HEIC photos. Please open this page in Safari, or choose a JPEG, PNG or WebP image."
+    },
+    "INVALID_API_KEY": {
+      "title": "API key rejected",
+      "message": "Your API key was rejected. Please check it and try again."
+    },
+    "RATE_LIMITED": {
+      "title": "Too many requests",
+      "message": "Too many requests. Please wait a moment and try again."
+    },
+    "NOT_A_MENU": {
+      "title": "No dishes found",
+      "message": "No dishes were found. Please make sure the photo shows a menu."
+    },
+    "PARSE_ERROR": {
+      "title": "Couldn't read the result",
+      "message": "The analysis result could not be read. Please try again."
+    },
+    "UNKNOWN": {
+      "title": "Something went wrong",
+      "message": "Something went wrong. Please try again."
+    }
+  },
+  "UploadZone": {
+    "dropHint": "Drop a menu photo here",
+    "choose": "Choose photo",
+    "takePhoto": "Take photo",
+    "remove": "Remove photo",
+    "limits": "JPEG, PNG, WebP or HEIC, up to 10MB"
+  },
+  "DishListSkeleton": {
+    "label": "Analyzing menu…"
+  },
+  "RouteError": {
+    "retry": "Try again"
   }
 }

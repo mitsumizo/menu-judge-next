@@ -40,9 +40,18 @@ export const MAX_TOKENS = 8192;
 export type ImageMediaType = "image/jpeg" | "image/png" | "image/webp";
 export type MessagesClient = Pick<Anthropic, "messages">;
 
+// ページの maxDuration（60 秒）から、画像の受け取りや応答の解析に使う 5 秒を引いた範囲に収める。
+// SDK はタイムアウトも再試行するため、再試行はしない（利用者が再送信できる）
+export const CLAUDE_TIMEOUT_MS = 50_000;
+export const CLAUDE_MAX_RETRIES = 0;
+
 /** ユーザーの APIキーで Anthropic クライアントを作る。baseURL は SDK が ANTHROPIC_BASE_URL から読む。 */
 export function createClaudeClient(apiKey: string): Anthropic {
-  return new Anthropic({ apiKey });
+  return new Anthropic({
+    apiKey,
+    timeout: CLAUDE_TIMEOUT_MS,
+    maxRetries: CLAUDE_MAX_RETRIES,
+  });
 }
 
 /** メニュー画像を Claude に送り、料理一覧またはエラーコードを返す。例外は投げない。 */
@@ -82,6 +91,9 @@ export async function analyzeMenuImage(
     if (error instanceof Anthropic.APIError) {
       if (error.status === 401) return { ok: false, code: "INVALID_API_KEY" };
       if (error.status === 429) return { ok: false, code: "RATE_LIMITED" };
+      // 読めない画像・サイズ超過など、画像が原因の 400 は利用者が写真を選び直せば解決する
+      if (error.status === 400 && /image/i.test(error.message))
+        return { ok: false, code: "INVALID_FILE" };
     }
     // APIキーを含みうるメッセージ本文は出さず、エラー名だけを記録する
     console.error("[analyzeMenuImage] failed", {

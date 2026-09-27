@@ -23,8 +23,9 @@ npm run format           # Prettier で整形
 npm run format:check     # Prettier のフォーマットチェック（--check）
 npm run e2e              # Playwright E2E テスト（http://localhost:3100）
 npm run test             # Vitest（unit + storybook の全プロジェクト）
-npm run test:unit        # Vitest（src/**/*.test.ts。lib 以外の層も含む）
+npm run test:unit        # Vitest（src/**/*.test.ts。*.browser.test.ts を除く）
 npm run test:storybook   # Vitest（Storybook の play 関数テストのみ）
+npm run test:browser     # Vitest（*.browser.test.ts を Chromium で実行）
 npm run storybook        # Storybook 起動
 npm run build-storybook  # Storybook の静的ビルド
 ```
@@ -40,8 +41,9 @@ src/
 │   ├── molecules/     # 表示専用。翻訳・通信・localStorage に触れない
 │   ├── organisms/     # 翻訳（useTranslations）や状態を持ってよい。"use client" はここから
 │   └── templates/     # 配置のみ決定。中身は children / props（slot）で受け取る
-├── lib/              # dish, prompt, analyze-result, claude, analyze-input, api-key-storage
-│                     # （image.ts は Phase 2 で追加予定）
+├── lib/              # dish, prompt, analyze-result, claude, analyze-input, api-key-storage,
+│                     # image, resize-image, upload-rules
+├── testing/          # テスト・Storybook 専用のヘルパー（本番コードから import しない）
 ├── i18n/
 └── messages/
 ```
@@ -66,10 +68,13 @@ type AnalyzeResult =
 
 - APIキーはサーバーに保存せず、ログにも出力しない（ログには `code` と処理時間のみ残す）
 - `lib/claude.ts` の先頭には `import "server-only"` を置き、クライアントバンドルへの混入を防ぐ
+- セキュリティヘッダー（CSP など）は `next.config.ts` の `headers()` で付ける。`/en` の SSG を保つため nonce 方式は使わず、`script-src` は `'unsafe-inline'` を許可する代わりに取得元・埋め込み・送信先を絞る
 
 ## テスト方針
 
-- `lib/`（dish, prompt, analyze-result, claude, analyze-input, api-key-storage。image は Phase 2 で追加）: Vitest で TDD（Red → Green → Refactor）。正常系・異常系・境界値を網羅する
+- `lib/`: Vitest で TDD（Red → Green → Refactor）。正常系・異常系・境界値を網羅する
+- ブラウザ API（Canvas・createImageBitmap 等）を使うロジック: `*.browser.test.ts` に書き、Vitest の browser プロジェクト（Chromium）で実行する
+- テスト用の画像生成などのヘルパーは `src/testing/` に置く（本番コードから import しない）
 - コンポーネント: Storybook の `play` 関数による操作テスト
 - 本番コードに `if (testMode)` のようなテスト用の条件分岐やマジックナンバーを入れない
 
