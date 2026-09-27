@@ -13,7 +13,10 @@ import { ApiKeyField } from "@/components/molecules/ApiKeyField/ApiKeyField";
 import { MAX_IMAGE_BYTES } from "@/lib/analyze-input";
 import type { AnalyzeErrorCode, AnalyzeResult } from "@/lib/analyze-result";
 import { loadApiKey, saveApiKey } from "@/lib/api-key-storage";
+import { resizeImage } from "@/lib/resize-image";
+import { INPUT_ACCEPT, isAcceptableInput } from "@/lib/upload-rules";
 import { DishList } from "../DishList/DishList";
+import { UploadZone } from "../UploadZone/UploadZone";
 
 type Props = {
   action: (
@@ -21,9 +24,6 @@ type Props = {
     formData: FormData,
   ) => Promise<AnalyzeResult>;
 };
-
-const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp"];
-const ACCEPT = ACCEPTED_TYPES.join(",");
 
 // localStorage の変更を購読する必要はない（初回表示時に読めれば十分）
 const subscribeNothing = () => () => {};
@@ -51,6 +51,8 @@ export function AnalyzeForm({ action }: Props) {
   const savedKey = useSyncExternalStore(subscribeNothing, loadApiKey, () => "");
   const [typedKey, setTypedKey] = useState<string | null>(null);
   const apiKey = typedKey ?? savedKey;
+  const [file, setFile] = useState<File | null>(null);
+  const [preparing, setPreparing] = useState(false);
   const [clientError, setClientError] = useState<AnalyzeErrorCode | null>(null);
 
   function handleApiKeyChange(value: string) {
@@ -58,22 +60,32 @@ export function AnalyzeForm({ action }: Props) {
     saveApiKey(value.trim());
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    // form の action 属性経由だと React が送信後にフォームをリセットし、選んだ写真が消える。
-    // 自前で送信して、再試行時も同じ写真を使えるようにする
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    // form の action 属性は使わない（React が送信後にフォームをリセットするため）。
+    // 画像を縮小してから自前で FormData を組み立てて送る
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const image = formData.get("image");
-    const error: AnalyzeErrorCode | null = !apiKey.trim()
-      ? "NO_API_KEY"
-      : !(image instanceof File) ||
-          image.size === 0 ||
-          image.size > MAX_IMAGE_BYTES ||
-          !ACCEPTED_TYPES.includes(image.type)
-        ? "INVALID_FILE"
-        : null;
-    setClientError(error);
-    if (error) return;
+    if (preparing || pending) return;
+    const key = apiKey.trim();
+    if (!key) return setClientError("NO_API_KEY");
+    if (!file || !isAcceptableInput(file))
+      return setClientError("INVALID_FILE");
+
+    setPreparing(true);
+    let image: File;
+    try {
+      image = await resizeImage(file);
+    } catch {
+      setPreparing(false);
+      return setClientError("INVALID_FILE");
+    }
+    setPreparing(false);
+    if (image.size > MAX_IMAGE_BYTES) return setClientError("INVALID_FILE");
+
+    setClientError(null);
+    const formData = new FormData();
+    formData.set("apiKey", key);
+    formData.set("locale", locale);
+    formData.set("image", image);
     startTransition(() => formAction(formData));
   }
 
@@ -85,7 +97,6 @@ export function AnalyzeForm({ action }: Props) {
         onSubmit={handleSubmit}
         className="bg-surface space-y-4 rounded-2xl p-5"
       >
-        <input type="hidden" name="locale" value={locale} />
         <ApiKeyField
           value={apiKey}
           onChange={handleApiKeyChange}
@@ -93,17 +104,13 @@ export function AnalyzeForm({ action }: Props) {
           showLabel={t("show")}
           hideLabel={t("hide")}
         />
-        <label className="block space-y-2">
-          <span className="text-text-secondary text-sm">{t("image")}</span>
-          <input
-            type="file"
-            name="image"
-            accept={ACCEPT}
-            className="text-text-secondary file:bg-primary block w-full text-sm file:mr-4 file:rounded-lg file:border-0 file:px-4 file:py-2 file:text-white"
-          />
-        </label>
-        <Button type="submit" disabled={pending} className="w-full">
-          {pending ? t("analyzing") : t("submit")}
+        <UploadZone file={file} onFileChange={setFile} accept={INPUT_ACCEPT} />
+        <Button
+          type="submit"
+          disabled={pending || preparing}
+          className="w-full"
+        >
+          {preparing ? t("preparing") : pending ? t("analyzing") : t("submit")}
         </Button>
       </form>
 
