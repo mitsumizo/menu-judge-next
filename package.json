@@ -18,7 +18,8 @@
     "build-storybook": "storybook build",
     "test": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run --passWithNoTests",
     "test:unit": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run --project unit --passWithNoTests",
-    "test:storybook": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run --project storybook"
+    "test:storybook": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run --project storybook",
+    "test:browser": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run --project browser"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.128.0",

@@ -23,8 +23,9 @@ npm run format           # Prettier で整形
 npm run format:check     # Prettier のフォーマットチェック（--check）
 npm run e2e              # Playwright E2E テスト（http://localhost:3100）
 npm run test             # Vitest（unit + storybook の全プロジェクト）
-npm run test:unit        # Vitest（src/**/*.test.ts。lib 以外の層も含む）
+npm run test:unit        # Vitest（src/**/*.test.ts。*.browser.test.ts を除く）
 npm run test:storybook   # Vitest（Storybook の play 関数テストのみ）
+npm run test:browser     # Vitest（*.browser.test.ts を Chromium で実行）
 npm run storybook        # Storybook 起動
 npm run build-storybook  # Storybook の静的ビルド
 ```
