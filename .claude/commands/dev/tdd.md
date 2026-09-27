@@ -8,12 +8,12 @@ description: Enforce the TDD workflow (RED → GREEN → REFACTOR). Use at the s
 
 ## テストの置き場所（実装の種類で決まる）
 
-| 実装の種類                                              | テストファイル                                                  | 実行コマンド             |
-| ------------------------------------------------------- | --------------------------------------------------------------- | ------------------------ |
-| `src/lib/` の純粋なロジック                             | 実装と同階層の `xxx.test.ts`                                    | `npm run test:unit`      |
-| ブラウザ API（Canvas・createImageBitmap 等）を使う処理  | 実装と同階層の `xxx.browser.test.ts`                            | `npm run test:browser`   |
-| コンポーネント                                          | 同じディレクトリの `Xxx.stories.tsx` の `play` 関数             | `npm run test:storybook` |
-| ページをまたぐ操作・画面遷移                            | `e2e/*.spec.ts`（Playwright）                                   | `npm run e2e`            |
+| 実装の種類                                             | テストファイル                                      | 実行コマンド             |
+| ------------------------------------------------------ | --------------------------------------------------- | ------------------------ |
+| `src/lib/` の純粋なロジック                            | 実装と同階層の `xxx.test.ts`                        | `npm run test:unit`      |
+| ブラウザ API（Canvas・createImageBitmap 等）を使う処理 | 実装と同階層の `xxx.browser.test.ts`                | `npm run test:browser`   |
+| コンポーネント                                         | 同じディレクトリの `Xxx.stories.tsx` の `play` 関数 | `npm run test:storybook` |
+| ページをまたぐ操作・画面遷移                           | `e2e/*.spec.ts`（Playwright）                       | `npm run e2e`            |
 
 テスト用の画像生成などのヘルパーは `src/testing/` に置く（本番コードから import しない）。
 

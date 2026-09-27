@@ -18,12 +18,12 @@ Atomic Design の階層ルールに沿ってコンポーネントを作り、Sto
 
 ユーザーから収集する: コンポーネント名 / 役割 / 受け取る props / 操作（クリック・入力など）/ 翻訳や状態が必要か。
 
-| 階層      | 置いてよいもの                                                                        | 例                     |
-| --------- | ------------------------------------------------------------------------------------- | ---------------------- |
-| atoms     | 表示のみ。文言は props で受け取る                                                     | `Button`, `Tag`        |
-| molecules | atoms の組み合わせ。表示のみ。見た目のための局所的な状態だけ可                        | `ApiKeyField`, `Toast` |
-| organisms | 翻訳（`useTranslations`）・状態・localStorage を扱ってよい                           | `DishCard`, `AnalyzeForm` |
-| templates | 配置のみ。中身は `children` やスロット props で受け取る                               | `AnalyzeTemplate`      |
+| 階層      | 置いてよいもの                                                 | 例                        |
+| --------- | -------------------------------------------------------------- | ------------------------- |
+| atoms     | 表示のみ。文言は props で受け取る                              | `Button`, `Tag`           |
+| molecules | atoms の組み合わせ。表示のみ。見た目のための局所的な状態だけ可 | `ApiKeyField`, `Toast`    |
+| organisms | 翻訳（`useTranslations`）・状態・localStorage を扱ってよい     | `DishCard`, `AnalyzeForm` |
+| templates | 配置のみ。中身は `children` やスロット props で受け取る        | `AnalyzeTemplate`         |
 
 verify: 階層とその理由をユーザーに報告してから生成に入る。
 

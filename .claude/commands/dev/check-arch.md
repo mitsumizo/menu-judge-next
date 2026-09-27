@@ -93,6 +93,7 @@ CLAUDE.md の「ディレクトリ構成と Atomic Design」「セキュリテ�
 - CRITICAL: N 件 / WARNING: N 件
 
 ### 違反詳細
+
 [CRITICAL] #2 src/components/molecules/Foo/Foo.tsx:3 — useTranslations を使用 → 文言を props で受け取り、翻訳は organisms で行う
 [WARNING] #7 ...
 
