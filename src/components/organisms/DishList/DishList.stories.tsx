@@ -17,6 +17,7 @@ export const Single: Story = {
     });
     await expect(within(section).getByText("1 dish found")).toBeVisible();
     await expect(within(section).getAllByRole("article")).toHaveLength(1);
+    await expect(section).toHaveAttribute("aria-live", "polite");
   },
 };
 

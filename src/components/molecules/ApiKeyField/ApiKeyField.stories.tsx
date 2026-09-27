@@ -43,7 +43,17 @@ export const ToggleVisibility: Story = {
   args: { value: "sk-ant-secret" },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole("button", { name: "Show" }));
+    const toggle = canvas.getByRole("button", { name: "Show" });
+    await expect(toggle).toHaveAttribute("aria-pressed", "false");
+    await expect(toggle).toHaveAttribute(
+      "aria-controls",
+      canvas.getByLabelText("Claude API key").id,
+    );
+    await userEvent.click(toggle);
+    await expect(canvas.getByRole("button", { name: "Hide" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
     await expect(canvas.getByLabelText("Claude API key")).toHaveAttribute(
       "type",
       "text",

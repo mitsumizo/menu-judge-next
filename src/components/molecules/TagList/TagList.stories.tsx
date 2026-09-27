@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, within } from "storybook/test";
+import { expect, spyOn, within } from "storybook/test";
 import { TagList } from "./TagList";
 
 const meta = {
@@ -27,5 +27,25 @@ export const Empty: Story = {
   play: async ({ canvasElement }) => {
     await expect(within(canvasElement).getByText("Unknown")).toBeVisible();
     await expect(within(canvasElement).queryByRole("listitem")).toBeNull();
+  },
+};
+
+let consoleError: ReturnType<typeof spyOn>;
+
+export const DuplicateItems: Story = {
+  args: { items: ["egg", "egg"] },
+  beforeEach: () => {
+    consoleError = spyOn(console, "error");
+    return () => consoleError.mockRestore();
+  },
+  play: async ({ canvasElement }) => {
+    const list = within(canvasElement).getByRole("list", {
+      name: "Ingredients",
+    });
+    await expect(within(list).getAllByRole("listitem")).toHaveLength(2);
+    const keyWarnings = consoleError.mock.calls.filter((call) =>
+      String(call[0]).includes("same key"),
+    );
+    await expect(keyWarnings).toEqual([]);
   },
 };

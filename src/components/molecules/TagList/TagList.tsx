@@ -10,8 +10,8 @@ export function TagList({ label, items, emptyText }: Props) {
         <p className="text-text-secondary/70 text-xs">{emptyText}</p>
       ) : (
         <ul aria-label={label} className="flex flex-wrap gap-2">
-          {items.map((item) => (
-            <li key={item}>
+          {items.map((item, i) => (
+            <li key={`${item}-${i}`}>
               <Tag>{item}</Tag>
             </li>
           ))}
