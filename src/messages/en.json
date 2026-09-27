@@ -38,5 +38,12 @@
     "NOT_A_MENU": "No dishes were found. Please make sure the photo shows a menu.",
     "PARSE_ERROR": "The analysis result could not be read. Please try again.",
     "UNKNOWN": "Something went wrong. Please try again."
+  },
+  "UploadZone": {
+    "dropHint": "Drop a menu photo here",
+    "choose": "Choose photo",
+    "takePhoto": "Take photo",
+    "remove": "Remove photo",
+    "limits": "JPEG, PNG, WebP or HEIC, up to 10MB"
   }
 }
