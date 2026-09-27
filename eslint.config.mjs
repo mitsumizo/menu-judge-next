@@ -21,6 +21,7 @@ const eslintConfig = defineConfig([
     "playwright-report/**",
     "test-results/**",
     "coverage/**",
+    ".claude/worktrees/**",
   ]),
   ...storybook.configs["flat/recommended"],
   prettier,

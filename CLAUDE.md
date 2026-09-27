@@ -30,6 +30,12 @@ npm run storybook        # Storybook 起動
 npm run build-storybook  # Storybook の静的ビルド
 ```
 
+### 自動整形とリント
+
+- Claude の編集時: `.claude/settings.json` の PostToolUse Hook（`.claude/hooks/format.sh`）が、編集したファイルに `eslint --fix` と Prettier をかける。自動修正できない ESLint エラーは exit 2 で Claude に返るので、その場で直す
+- コミット時: husky の pre-commit で lint-staged が走り、ステージしたファイルに同じ処理をかける（設定は `package.json` の `lint-staged`）
+- CI では `lint` と `format:check` で最終確認する
+
 ## ディレクトリ構成と Atomic Design
 
 ```
