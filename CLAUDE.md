@@ -36,6 +36,21 @@ npm run build-storybook  # Storybook の静的ビルド
 - コミット時: husky の pre-commit で lint-staged が走り、ステージしたファイルに同じ処理をかける（設定は `package.json` の `lint-staged`）
 - CI では `lint` と `format:check` で最終確認する
 
+### スラッシュコマンド（`.claude/commands/`）
+
+| コマンド                            | 用途                                                                    |
+| ----------------------------------- | ----------------------------------------------------------------------- |
+| `/issue:implement-issue <N>`        | Issue を worktree で TDD 実装。手動の動作確認とレビューを挟む慎重版     |
+| `/issue:implement-issue-auto <N>`   | サブエージェントへの委譲・並列レビュー・PR 作成まで一気に進める自動版   |
+| `/pr:pre-pr-check`                  | PR 前に CI と同じチェック（lint〜E2E）とコンフリクト確認を行う          |
+| `/dev:tdd <対象>`                   | RED → GREEN → REFACTOR を強制する                                       |
+| `/dev:new-lib`                      | `src/lib/` にスキーマ・ロジックを TDD で追加する                        |
+| `/dev:new-component`                | 正しい Atomic Design の階層にコンポーネントと story を作る              |
+| `/dev:check-arch`                   | 階層ルール・Server/Client の境界・禁止 import を検査する                |
+| `/dev:build-fix`                    | 型・ビルドエラーを最小の差分で 1 件ずつ直す                             |
+| `/dev:coverage [パス]`              | `src/lib` のカバレッジを測り、不足しているテストを提案する              |
+| `/dev:refactor-duplicate [ディレクトリ]` | Rule of Three で重複を検出して共通化する                           |
+
 ## ディレクトリ構成と Atomic Design
 
 ```
