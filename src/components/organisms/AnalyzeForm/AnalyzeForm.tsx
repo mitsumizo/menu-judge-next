@@ -18,6 +18,7 @@ import { loadApiKey, saveApiKey } from "@/lib/api-key-storage";
 import { resizeImage } from "@/lib/resize-image";
 import { INPUT_ACCEPT, isAcceptableInput } from "@/lib/upload-rules";
 import { DishList } from "../DishList/DishList";
+import { DishListSkeleton } from "../DishListSkeleton/DishListSkeleton";
 import { ErrorPanel } from "../ErrorPanel/ErrorPanel";
 import { UploadZone } from "../UploadZone/UploadZone";
 
@@ -120,8 +121,14 @@ export function AnalyzeForm({ action }: Props) {
         </Button>
       </form>
 
-      {errorCode && <ErrorPanel code={errorCode} />}
-      {!clientError && state?.ok && <DishList dishes={state.dishes} />}
+      {pending || preparing ? (
+        <DishListSkeleton />
+      ) : (
+        <>
+          {errorCode && <ErrorPanel code={errorCode} />}
+          {!clientError && state?.ok && <DishList dishes={state.dishes} />}
+        </>
+      )}
       {toastFor && toastFor === state && state.ok && (
         <Toast
           message={t("toast", { count: state.dishes.length })}

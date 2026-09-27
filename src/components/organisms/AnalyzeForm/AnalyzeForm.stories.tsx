@@ -197,3 +197,25 @@ export const RetryKeepsSelectedPhoto: Story = {
     await expect(notAMenu.mock.calls[1][0]).toBeNull();
   },
 };
+
+export const ShowsSkeletonWhileAnalyzing: Story = {
+  args: {
+    action: fn<Action>(
+      () =>
+        new Promise((resolve) =>
+          setTimeout(() => resolve({ ok: true, dishes: [padThai] }), 300),
+        ),
+    ),
+  },
+  play: async ({ canvasElement }) => {
+    await fillAndSubmit(canvasElement, photo());
+    const c = within(canvasElement);
+    await expect(
+      await c.findByRole("status", { name: "Analyzing menu…" }),
+    ).toBeVisible();
+    await c.findByRole("heading", { name: "Pad Thai" });
+    await expect(
+      c.queryByRole("status", { name: "Analyzing menu…" }),
+    ).toBeNull();
+  },
+};
