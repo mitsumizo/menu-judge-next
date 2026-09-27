@@ -47,3 +47,7 @@ storybook-static
 
 # vitest browser mode failure attachments
 /.vitest-attachments/
+
+# Claude Code: git worktrees and per-user settings
+/.claude/worktrees/
+/.claude/settings.local.json

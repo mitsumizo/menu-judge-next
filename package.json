@@ -19,7 +19,8 @@
     "test": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run --passWithNoTests",
     "test:unit": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run --project unit --passWithNoTests",
     "test:storybook": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run --project storybook",
-    "test:browser": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run --project browser"
+    "test:browser": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run --project browser",
+    "prepare": "husky"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.128.0",
@@ -46,6 +47,8 @@
     "eslint-config-next": "16.3.6",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-storybook": "^10.6.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
     "playwright": "^1.63.0",
     "prettier": "^3.9.9",
     "prettier-plugin-tailwindcss": "^0.8.1",
@@ -54,5 +57,12 @@
     "typescript": "^5",
     "vite": "^8.3.1",
     "vitest": "^4.1.11"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "eslint --fix --no-warn-ignored",
+      "prettier --write"
+    ],
+    "*.{json,md,css,yml,yaml}": "prettier --write"
   }
 }
