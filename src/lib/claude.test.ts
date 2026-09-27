@@ -1,7 +1,10 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
+  CLAUDE_MAX_RETRIES,
   CLAUDE_MODEL,
+  CLAUDE_TIMEOUT_MS,
+  createClaudeClient,
   analyzeMenuImage,
   parseMenuResponse,
   type MessagesClient,
@@ -114,6 +117,41 @@ describe("analyzeMenuImage", () => {
     vi.restoreAllMocks();
   });
 
+  // 実際の API エラーと同じく、レスポンス本文から APIError を生成する
+  function badRequest(message: string) {
+    return Anthropic.APIError.generate(
+      400,
+      { type: "error", error: { type: "invalid_request_error", message } },
+      undefined,
+      new Headers(),
+    );
+  }
+
+  it("画像が原因の 400 は INVALID_FILE", async () => {
+    const create = vi
+      .fn()
+      .mockRejectedValue(
+        badRequest(
+          "messages.0.content.0.image.source.base64: image exceeds 5 MB maximum",
+        ),
+      );
+    expect(await analyzeMenuImage(fakeClient(create), input)).toEqual({
+      ok: false,
+      code: "INVALID_FILE",
+    });
+  });
+
+  it("画像以外が原因の 400 は UNKNOWN", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const create = vi
+      .fn()
+      .mockRejectedValue(badRequest("max_tokens: must be positive"));
+    expect(await analyzeMenuImage(fakeClient(create), input)).toEqual({
+      ok: false,
+      code: "UNKNOWN",
+    });
+  });
+
   it("画像とロケール別プロンプトを指定モデルに送る", async () => {
     const create = vi.fn().mockResolvedValue(textResponse(json));
     await analyzeMenuImage(fakeClient(create), input);
@@ -184,5 +222,16 @@ describe("analyzeMenuImage", () => {
       name: "TypeError",
     });
     expect(JSON.stringify(log.mock.calls)).not.toContain("sk-ant-secret");
+  });
+});
+
+describe("createClaudeClient", () => {
+  it("Vercel の関数上限に収まるタイムアウトと再試行回数で初期化する", () => {
+    const client = createClaudeClient("sk-ant-test");
+    expect(client.timeout).toBe(CLAUDE_TIMEOUT_MS);
+    expect(client.maxRetries).toBe(CLAUDE_MAX_RETRIES);
+    expect(CLAUDE_TIMEOUT_MS * (CLAUDE_MAX_RETRIES + 1)).toBeLessThanOrEqual(
+      120_000,
+    );
   });
 });

@@ -41,8 +41,15 @@ export type ImageMediaType = "image/jpeg" | "image/png" | "image/webp";
 export type MessagesClient = Pick<Anthropic, "messages">;
 
 /** ユーザーの APIキーで Anthropic クライアントを作る。baseURL は SDK が ANTHROPIC_BASE_URL から読む。 */
+export const CLAUDE_TIMEOUT_MS = 55_000;
+export const CLAUDE_MAX_RETRIES = 1;
+
 export function createClaudeClient(apiKey: string): Anthropic {
-  return new Anthropic({ apiKey });
+  return new Anthropic({
+    apiKey,
+    timeout: CLAUDE_TIMEOUT_MS,
+    maxRetries: CLAUDE_MAX_RETRIES,
+  });
 }
 
 /** メニュー画像を Claude に送り、料理一覧またはエラーコードを返す。例外は投げない。 */
@@ -82,6 +89,9 @@ export async function analyzeMenuImage(
     if (error instanceof Anthropic.APIError) {
       if (error.status === 401) return { ok: false, code: "INVALID_API_KEY" };
       if (error.status === 429) return { ok: false, code: "RATE_LIMITED" };
+      // 読めない画像・サイズ超過など、画像が原因の 400 は利用者が写真を選び直せば解決する
+      if (error.status === 400 && /image/i.test(error.message))
+        return { ok: false, code: "INVALID_FILE" };
     }
     // APIキーを含みうるメッセージ本文は出さず、エラー名だけを記録する
     console.error("[analyzeMenuImage] failed", {

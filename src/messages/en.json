@@ -71,5 +71,8 @@
   },
   "DishListSkeleton": {
     "label": "Analyzing menu…"
+  },
+  "RouteError": {
+    "retry": "Try again"
   }
 }
